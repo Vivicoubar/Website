@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/state';
+	import { backendIp } from '../../store';
 
 	// Variable to store user input values
 	let username: string = '';
@@ -11,7 +11,7 @@
 		event.preventDefault(); // Prevent default form submission
 
 		try {
-			const response = await fetch('http://127.0.0.1:5000/api/login', {
+			const response = await fetch(backendIp + '/api/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
