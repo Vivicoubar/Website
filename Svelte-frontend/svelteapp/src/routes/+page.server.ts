@@ -1,7 +1,7 @@
-import type { Cookies } from '@sveltejs/kit';
+import { backendIp } from '../store.js';
 
-export async function load({ cookies }) {
-	const authenticated = isAuthenticated(cookies);
+export async function load() {
+	const authenticated = isAuthenticated();
 	const time = await fetchTime();
 	return {
 		time: time,
@@ -11,7 +11,7 @@ export async function load({ cookies }) {
 
 async function fetchTime(): Promise<{ hour: number; min: number }> {
 	try {
-		const response = await fetch('http://127.0.0.1:5000/api/hour');
+		const response = await fetch(backendIp + '/api/hour');
 		if (!response.ok) {
 			throw new Error('Failed to fetch time');
 		}
@@ -29,7 +29,17 @@ async function fetchTime(): Promise<{ hour: number; min: number }> {
 	}
 }
 
-function isAuthenticated(cookies: Cookies): boolean {
-	const authToken = cookies.get('auth_token');
-	return !!authToken; // If authToken exists, the user is authenticated (not secure obviously)
+async function isAuthenticated(): Promise<boolean> {
+	try {
+		const response = await fetch(backendIp + '/verifytken');
+		if (response.ok) {
+			const data = await response.json();
+			const isAuth: boolean = data.authenticated;
+			return isAuth;
+		}
+		return false;
+	} catch (error) {
+		console.error('Error fetching time:', error);
+		return false;
+	}
 }

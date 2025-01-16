@@ -70,7 +70,7 @@
 			<button onclick={() => (window.location.href = '/login')}>Se connecter</button>
 			<button
 				onclick={() => {
-					document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+					localStorage.removeItem('jwt');
 					window.location.href = '/';
 				}}>Se déconnecter</button
 			>
