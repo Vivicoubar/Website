@@ -96,19 +96,21 @@ def verify_jwt(token):
 
 
 def register_user(username, password):
+    cursor = conn.cursor()
     try:
-        with conn.cursor() as cursor:
-            cursor.execute(
-                """INSERT
+        cursor.execute(
+            """INSERT
                     INTO
                     user
                     VALUES('%(username)s', '%(password)s')
                 """,
-                {"username": username, "password": password},
-            )
+            {"username": username, "password": password},
+        )
         return True
     except mysql.connector.Error:
         return False
+    finally:
+        cursor.close()
 
 
 def generate_salt(length=10):
@@ -120,12 +122,11 @@ def generate_salt(length=10):
 
 
 def verify_password(username: str, password: str) -> bool:
+    cursor = conn.cursor()
     try:
-        # Se connecter à MySQL
-        with conn.cursor() as cursor:
-            # Effectuer une requête SELECT
-            cursor.execute(
-                """
+        # Effectuer une requête SELECT
+        cursor.execute(
+            """
             SELECT
                 admin
             FROM
@@ -133,24 +134,23 @@ def verify_password(username: str, password: str) -> bool:
             WHERE
                 username = %(username)s
         """,
-                {"username": username},
-            )
-            result = cursor.fetchone()
-            print(result)
+            {"username": username},
+        )
+        result = cursor.fetchone()
+        print(result)
         # Afficher les résultats dans la page
         return True
-
     except mysql.connector.Error:
         return False
+    finally:
+        cursor.close()
 
 
 def exists_username(username: str) -> bool:
+    cursor = conn.cursor()
     try:
-        # Se connecter à MySQL
-        with conn.cursor() as cursor:
-            # Effectuer une requête SELECT
-            cursor.execute(
-                """
+        cursor.execute(
+            """
             SELECT
                 admin
             FROM
@@ -158,17 +158,20 @@ def exists_username(username: str) -> bool:
             WHERE
                 username = %(username)s
         """,
-                {"username": username},
-            )
-            result = cursor.fetchone()
-            if result:
-                print(result)
-                return False
+            {"username": username},
+        )
+
+        result = cursor.fetchone()
+        if result:
+            print(result)
+            return False
         # Afficher les résultats dans la page
         return True
 
     except mysql.connector.Error:
         return False
+    finally:
+        cursor.close()
 
 
 def hash_password(plain_password):
