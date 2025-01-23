@@ -103,7 +103,7 @@ def register_user(username, password):
             """INSERT
                     INTO
                     user
-                    VALUES('%(username)s', '%(password)s')
+                    VALUES(%(username)s, %(password)s)
                 """,
             {"username": username, "password": password},
         )
