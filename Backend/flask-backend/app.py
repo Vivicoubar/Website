@@ -60,8 +60,11 @@ def register():
         data = request.get_json()
         username = data["username"]
         password = data["password"]
+        print("Try to find username")
         if not exists_username(username):
+            print("Username not found")
             return {"registrered": register_user(username, password)}
+        print("Username found")
         return {"registrered": False}
     return {"registrered": False}
 
@@ -100,6 +103,7 @@ def register_user(username, password):
     cursor = conn.cursor()
     try:
         salt = generate_salt(10)
+        print("Lets go")
         cursor.execute(
             """INSERT
                     INTO
