@@ -112,6 +112,7 @@ def register_user(username, password):
                 "password": hash_password(password, salt),
             },
         )
+        conn.commit()
         return True
     except mysql.connector.Error as err:
         print(err)
@@ -167,7 +168,6 @@ def exists_username(username: str) -> bool:
         """,
             {"username": username},
         )
-
         result = cursor.fetchone()
         if result:
             print(result)
