@@ -1,6 +1,3 @@
-from datetime import date, datetime, time, timedelta
-from decimal import Decimal
-from typing import Dict, Set, Tuple
 from flask import Flask, jsonify, request
 import jwt
 from flask_cors import CORS
@@ -95,6 +92,7 @@ def login():
 def verify_jwt(token):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        print(payload)
         return payload
     except jwt.ExpiredSignatureError:
         return "Token expired. Please log in again."
