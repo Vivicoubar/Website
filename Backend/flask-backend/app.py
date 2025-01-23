@@ -99,7 +99,7 @@ def verify_jwt(token):
         return "Invalid token. Please log in again."
 
 
-def register_user(username, password):
+def register_user(username: str, password: str):
     cursor = conn.cursor()
     try:
         salt = generate_salt(10)
