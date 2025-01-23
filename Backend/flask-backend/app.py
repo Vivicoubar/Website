@@ -15,7 +15,7 @@ db_config = {
 
 app = Flask(__name__)
 CORS(app)
-
+conn = mysql.connector.connect(**db_config)
 
 SECRET_KEY = "super_secret"
 
@@ -53,13 +53,25 @@ def verify_jwt_route():
     return {"authenticated": False}
 
 
+@app.route("/api/register", methods=["POST"])
+def register():
+    if request.method == "POST":
+        data = request.get_json()
+        username = data["username"]
+        password = data["password"]
+        if not exists_username(username):
+            return {"registrered": register_user(username, password)}
+        return {"registrered": False}
+    return {"registrered": False}
+
+
 @app.route("/api/login", methods=["POST"])
 def login():
     if request.method == "POST":
         data = request.get_json()
         username = data["username"]
         password = data["password"]
-        if username == "admin" and password == "admin":
+        if verify_password(username, password):
             return jsonify(
                 {
                     "message": "Login successful!",
@@ -83,6 +95,22 @@ def verify_jwt(token):
         return "Invalid token. Please log in again."
 
 
+def register_user(username, password):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """INSERT
+                    INTO
+                    users
+                    VALUES('%(username)s', '%(password)s')
+                """,
+                {"username": username, "password": password},
+            )
+        return True
+    except mysql.connector.Error:
+        return False
+
+
 def generate_salt(length=10):
     """Génère un sel aléatoire de longueur spécifiée (max 10)."""
     salt = os.urandom(length)  # Génère un sel aléatoire
@@ -91,25 +119,56 @@ def generate_salt(length=10):
     ]  # Convertit le sel en hex et le tronque à la longueur voulue
 
 
-def verify_password():
+def verify_password(username: str, password: str) -> bool:
     try:
         # Se connecter à MySQL
-        conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
-
-        # Effectuer une requête SELECT
-        cursor.execute("SELECT * FROM ma_table;")
-        result = cursor.fetchall()
-
-        # Fermer la connexion
-        cursor.close()
-        conn.close()
-
+        with conn.cursor() as cursor:
+            # Effectuer une requête SELECT
+            cursor.execute(
+                """
+            SELECT
+                admin
+            FROM
+                users
+            WHERE
+                username = %(username)s
+        """,
+                {"username": username},
+            )
+            result = cursor.fetchone()
+            print(result)
         # Afficher les résultats dans la page
-        return f"Résultats de la requête : {result}"
+        return True
 
-    except mysql.connector.Error as err:
-        return f"Erreur : {err}"
+    except mysql.connector.Error:
+        return False
+
+
+def exists_username(username: str) -> bool:
+    try:
+        # Se connecter à MySQL
+        with conn.cursor() as cursor:
+            # Effectuer une requête SELECT
+            cursor.execute(
+                """
+            SELECT
+                admin
+            FROM
+                users
+            WHERE
+                username = %(username)s
+        """,
+                {"username": username},
+            )
+            result = cursor.fetchone()
+            if result:
+                print(result)
+                return False
+        # Afficher les résultats dans la page
+        return True
+
+    except mysql.connector.Error:
+        return False
 
 
 def hash_password(plain_password):
