@@ -104,7 +104,7 @@ def register_user(username, password):
             """INSERT
                     INTO
                     user
-                    VALUES(%(username)s, %(salt)s, %(password)s)
+                    VALUES(%(username)s, %(salt)s, %(password)s);
                 """,
             {
                 "username": username,
@@ -169,6 +169,7 @@ def exists_username(username: str) -> bool:
             {"username": username},
         )
         result = cursor.fetchone()
+        print(result)
         if result:
             print(result)
             return False
