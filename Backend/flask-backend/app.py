@@ -136,11 +136,12 @@ def generate_salt(length=10):
 def verify_password(username: str, password: str) -> bool:
     cursor = conn.cursor()
     try:
+        print("fetching username", username)
         # Effectuer une requête SELECT
         cursor.execute(
             """
             SELECT
-                admin
+                salt,password
             FROM
                 user
             WHERE
