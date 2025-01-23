@@ -101,7 +101,7 @@ def register_user(username, password):
             cursor.execute(
                 """INSERT
                     INTO
-                    users
+                    user
                     VALUES('%(username)s', '%(password)s')
                 """,
                 {"username": username, "password": password},
@@ -129,7 +129,7 @@ def verify_password(username: str, password: str) -> bool:
             SELECT
                 admin
             FROM
-                users
+                user
             WHERE
                 username = %(username)s
         """,
@@ -154,7 +154,7 @@ def exists_username(username: str) -> bool:
             SELECT
                 admin
             FROM
-                users
+                user
             WHERE
                 username = %(username)s
         """,
