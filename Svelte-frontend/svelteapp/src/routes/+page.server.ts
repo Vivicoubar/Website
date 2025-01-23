@@ -1,7 +1,7 @@
 import { backendIp } from '../store.js';
 
 export async function load() {
-	const authenticated = isAuthenticated();
+	const authenticated = await isAuthenticated();
 	const time = await fetchTime();
 	return {
 		time: time,
@@ -31,7 +31,7 @@ async function fetchTime(): Promise<{ hour: number; min: number }> {
 
 async function isAuthenticated(): Promise<boolean> {
 	try {
-		const response = await fetch(backendIp + '/verifytken');
+		const response = await fetch(backendIp + '/api/verifyjwt');
 		if (response.ok) {
 			const data = await response.json();
 			const isAuth: boolean = data.authenticated;
