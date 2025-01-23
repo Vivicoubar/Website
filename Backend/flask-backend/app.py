@@ -1,3 +1,6 @@
+from datetime import date, datetime, time, timedelta
+from decimal import Decimal
+from typing import Dict, Set, Tuple
 from flask import Flask, jsonify, request
 import jwt
 from flask_cors import CORS
@@ -134,7 +137,7 @@ def generate_salt(length=10):
 
 
 def verify_password(username: str, password: str) -> bool:
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
     try:
         print("fetching username", username)
         # Effectuer une requête SELECT
