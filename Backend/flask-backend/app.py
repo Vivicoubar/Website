@@ -108,7 +108,8 @@ def register_user(username, password):
             {"username": username, "password": password},
         )
         return True
-    except mysql.connector.Error:
+    except mysql.connector.Error as err:
+        print(err)
         return False
     finally:
         cursor.close()
@@ -190,4 +191,4 @@ def hash_password(plain_password):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="192.168.0.4", port=5000)
