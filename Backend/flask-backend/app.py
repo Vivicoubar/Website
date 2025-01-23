@@ -103,11 +103,11 @@ def register_user(username, password):
     cursor = conn.cursor()
     try:
         salt = generate_salt(10)
-        print("Lets go")
+        print("Lets")
         cursor.execute(
             """INSERT
                     INTO
-                    user
+                    user (username, salt, password)
                     VALUES(%(username)s, %(salt)s, %(password)s);
                 """,
             {
