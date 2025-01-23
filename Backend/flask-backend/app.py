@@ -99,13 +99,18 @@ def verify_jwt(token):
 def register_user(username, password):
     cursor = conn.cursor()
     try:
+        salt = generate_salt(10)
         cursor.execute(
             """INSERT
                     INTO
                     user
-                    VALUES(%(username)s, %(password)s)
+                    VALUES(%(username)s, %(salt)s, %(password)s)
                 """,
-            {"username": username, "password": password},
+            {
+                "username": username,
+                "salt": salt,
+                "password": hash_password(password, salt),
+            },
         )
         return True
     except mysql.connector.Error as err:
@@ -176,10 +181,8 @@ def exists_username(username: str) -> bool:
         cursor.close()
 
 
-def hash_password(plain_password):
+def hash_password(plain_password, salt):
     """Hache le mot de passe en utilisant SHA-256 après avoir ajouté un sel."""
-    # Génère un sel aléatoire
-    salt = generate_salt()
 
     # Ajoute le sel au mot de passe en clair
     salted_password = plain_password + salt
@@ -187,7 +190,7 @@ def hash_password(plain_password):
     # Hache le mot de passe salé avec SHA-256
     hashed_password = hashlib.sha256(salted_password.encode()).hexdigest()
 
-    return salt, hashed_password
+    return hashed_password
 
 
 if __name__ == "__main__":
