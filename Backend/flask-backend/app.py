@@ -11,6 +11,7 @@ db_config = {
     "user": "backend-user",  # Le nom d'utilisateur
     "password": "backend-password",  # Le mot de passe
     "database": "hour_api_db",  # Le nom de la base de données
+    "auth_plugin": "mysql_native_password",
 }
 
 app = Flask(__name__)
