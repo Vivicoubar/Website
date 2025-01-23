@@ -22,7 +22,7 @@
 			const data = await response.json();
 			console.log(data);
 
-			if (data.result) {
+			if (data.registered) {
 				// If login is successful, store authentication token in a cookie
 				const data = await response.json();
 				let reg = data.get('registered');

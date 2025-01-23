@@ -22,9 +22,8 @@
 			const data = await response.json();
 			console.log(data);
 
-			if (data.result) {
+			if (data.authenticated) {
 				// If login is successful, store authentication token in a cookie
-				const data = await response.json();
 				localStorage.setItem('jwt', data.token); // Store the token in localStorage
 				window.location.href = '/'; // Redirect to protected page
 			} else {

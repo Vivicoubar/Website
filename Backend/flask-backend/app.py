@@ -63,10 +63,10 @@ def register():
         print("Try to find username")
         if not exists_username(username):
             print("Username not found")
-            return {"registrered": register_user(username, password)}
+            return {"registered": register_user(username, password)}
         print("Username found")
-        return {"registrered": False}
-    return {"registrered": False}
+        return {"registered": False}
+    return {"registered": False}
 
 
 @app.route("/api/login", methods=["POST"])
