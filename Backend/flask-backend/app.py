@@ -153,9 +153,13 @@ def verify_password(username: str, password: str) -> bool:
             {"username": username},
         )
         result = cursor.fetchone()
-        print(result)
-        # Afficher les résultats dans la page
-        return True
+        hashed_password = hash_password(password, result.get("salt"))  # type: ignore
+        if hashed_password == result.get("password"):  # type: ignore
+            print("OKAY")
+            return True
+        else:
+            print("Pas Okay")
+            return False
     except mysql.connector.Error:
         return False
     finally:
