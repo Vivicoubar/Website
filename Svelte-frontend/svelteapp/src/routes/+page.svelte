@@ -1,14 +1,32 @@
 <script>
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
-	let { isAuthenticated } = page.data;
-	let { hour, min } = page.data.time;
+
+	// Payload init
+	let loadPayload = page.data
+	let isAuthenticated = loadPayload.authenticated;
+	let { hour, min } = loadPayload.time ?? {hour: -1, min:-1};
 	// Load Bootstrap with unmount
 	onMount(async () => {
 		await import('bootstrap/dist/css/bootstrap.min.css');
 		// @ts-ignore
 		await import('bootstrap/dist/js/bootstrap.min.js');
 	});
+
+	async function handleLogout() {
+		const response = await fetch('/api/logout', {
+			method: 'POST', 
+			headers: {
+				'Content-Type': "application/json", 
+			},
+		});
+
+		if (response.ok) {
+			window.location.href = '/';
+		} else {
+			alert("Logout failed. Please try again.")
+		}
+	}
 </script>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -68,13 +86,11 @@
 			</div>
 		</div>
 		<div>
-			<button onclick={() => (window.location.href = '/login')}>Se connecter</button>
-			<button
-				onclick={() => {
-					localStorage.removeItem('jwt');
-					window.location.href = '/';
-				}}>Se déconnecter</button
-			>
+			{#if !isAuthenticated}
+				<button onclick={() => (window.location.href = '/login')}>Se connecter</button>
+			{:else}
+				<button onclick={handleLogout}>Se déconnecter</button>
+			{/if}
 		</div>
 	</div>
 </main>

@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { backendIp } from '../../store';
-
 	// Variable to store user input values
 	let username: string = '';
 	let password: string = '';
 
-	// Function to handle login
+	// Function to handle register
 	const handleLogin = async (event: Event) => {
 		event.preventDefault(); // Prevent default form submission
 
 		try {
-			const response = await fetch(backendIp + '/api/register', {
+			const response = await fetch('/api/register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -22,10 +20,8 @@
 			const data = await response.json();
 			console.log(data);
 
-			if (data.result) {
-				// If login is successful, store authentication token in a cookie
-				const data = await response.json();
-				let reg = data.get('registered');
+			if (response.ok) {
+				let reg = data.registered;
 				if (reg) {
 					alert('User registered');
 				} else {

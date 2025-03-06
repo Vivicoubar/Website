@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { backendIp } from '../../store';
-
 	// Variable to store user input values
 	let username: string = '';
 	let password: string = '';
@@ -11,7 +9,7 @@
 		event.preventDefault(); // Prevent default form submission
 
 		try {
-			const response = await fetch(backendIp + '/api/login', {
+			const response = await fetch('/api/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -24,11 +22,13 @@
 
 			if (data.result) {
 				// If login is successful, store authentication token in a cookie
-				const data = await response.json();
-				localStorage.setItem('jwt', data.token); // Store the token in localStorage
-				window.location.href = '/'; // Redirect to protected page
+				
+				alert("correct cred")
+				// localStorage.setItem('jwt', data.token); // Store the token in localStorage
+				window.location.href = '/'; // Redirect to home page
+
 			} else {
-				alert('Invalid credentials');
+				alert(data.error);
 			}
 		} catch (error) {
 			console.error('Error:', error);
