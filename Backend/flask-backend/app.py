@@ -32,22 +32,22 @@ def get_data():
     return jsonify({"message": "Hello from Flask!"})
 
 
-@app.route("/api/hour", methods=["GET"])
+@app.route("/api/hour", methods=["POST"])
 def get_hour():
-    token = request.headers.get("Authorization")
+    data = request.get_json()
+    token = data["authToken"]
     if token:
-        token = token.split(" ")[1]  # Extract token (remove "Bearer" part)
         payload = verify_jwt(token)
         if payload:
             return jsonify({"hour": gmtime().tm_hour, "min": gmtime().tm_min})
     return jsonify({"message": "Unauthorized"}), 401
 
 
-@app.route("/api/verifyjwt", methods=["GET"])
+@app.route("/api/verifyjwt", methods=["POST"])
 def verify_jwt_route():
-    token = request.headers.get("Authorization")
+    data = request.get_json()
+    token = data["authToken"]
     if token:
-        token = token.split(" ")[1]
         payload = verify_jwt(token)
         if payload:
             return {"authenticated": True}
