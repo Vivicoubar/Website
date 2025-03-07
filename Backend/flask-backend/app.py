@@ -46,11 +46,12 @@ def get_hour():
 @app.route("/api/verifyjwt", methods=["POST"])
 def verify_jwt_route():
     data = request.get_json()
-    token = data["authToken"]
-    if token:
-        payload = verify_jwt(token)
-        if payload:
-            return {"authenticated": True}
+    if "authToken" in data:
+        token = data["authToken"]
+        if token:
+            payload = verify_jwt(token)
+            if payload:
+                return {"authenticated": True}
     return {"authenticated": False}
 
 
@@ -151,6 +152,8 @@ def verify_password(username: str, password: str) -> bool:
             {"username": username},
         )
         result = cursor.fetchone()
+        if result is None:
+            return False
         hashed_password = hash_password(password, result.get("salt"))  # type: ignore
         if hashed_password == result.get("password"):  # type: ignore
             print("OKAY")
